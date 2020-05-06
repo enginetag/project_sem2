@@ -42,10 +42,10 @@ vector<Vector> counter_interactions(vector<Point> points) {
         constant = G * points[i].m;
         temp_F.resize(n);
         for (int j = i + 1; j < n; ++j) {
-            temp_r.setX(points[i].x - points[j].x);
-            temp_r.setY(points[i].y - points[j].y);
+            temp_r.setX(points[i].x + points[i].r - (points[j].x + points[j].r));
+            temp_r.setY(points[i].y + points[i].r - (points[j].y + points[j].r));
             dist_r = sqrt(pow(temp_r.getX(), 2) + pow(temp_r.getY(), 2));
-            constant /= pow(dist_r,3);
+            constant /= pow(dist_r, 3);
             temp_F[j] = points[j].m * constant * temp_r * -1;
         }
         interactions[i] = temp_F;
@@ -91,7 +91,7 @@ int main() {
         double m, r, x, y;
         Vector v;
         cin >> m >> r >> x >> y >> v;
-        Point p(m * pow(10,9), r, x, y, v);
+        Point p(m * pow(10, 9), r, x, y, v);
         points.push_back(p);
     }
     vector<Vector> sum_F;
@@ -111,35 +111,34 @@ int main() {
         }
 
         sum_F = counter_interactions(points);
-        points = updater(points,sum_F);
+        points = updater(points, sum_F);
         sum_F.clear();
-/*
+
+
+        //if (timer.getElapsedTime().asSeconds() > 0.1f) {
+        for (int i = 0; i < n; ++i) {
+            shapes.emplace_back(points[i].r, 30);
+            shapes[i].setFillColor(sf::Color::Blue);
+            shapes[i].move(points[i].x, points[i].y);
+
+            orbs.emplace_back(0.5, 30);
+            (*orbs.rbegin()).setFillColor(sf::Color::Blue);
+            (*orbs.rbegin()).move(points[i].x + points[i].r, points[i].y + points[i].r);
+        }
+
+        window.clear(sf::Color::White);
+
+
+        for (int i = 0; i < n; ++i) {
+            window.draw(shapes[i]);
+        }
         for (int i = 0; i < orbs.size(); ++i) {
             window.draw(orbs[i]);
         }
-        */
-        //if (timer.getElapsedTime().asSeconds() > 0.1f) {
-            for (int i = 0; i < n; ++i) {
-                shapes.emplace_back(points[i].r, 30);
-                shapes[i].setFillColor(sf::Color::Blue);
-                shapes[i].move(points[i].x, points[i].y);
+        window.display();
 
-                orbs.emplace_back(0.5, 30);
-                (*orbs.rbegin()).setFillColor(sf::Color::Blue);
-                (*orbs.rbegin()).move(points[i].x + points[i].r, points[i].y + points[i].r);
-            }
-
-            window.clear(sf::Color::White);
-
-
-            for (int i = 0; i < n; ++i) {
-                window.draw(shapes[i]);
-                //window.draw((*orbs.rbegin()));
-            }
-            window.display();
-
-            shapes.clear();
-            timer.restart();
+        shapes.clear();
+        timer.restart();
         //}
         //sf::sleep(sf::milliseconds(400));
 
