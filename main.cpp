@@ -7,6 +7,8 @@
 using namespace std;
 
 const double G = 6.67 * pow(10, -11);
+const unsigned int N = 25;
+const float dt = 0.1;
 
 class Point {
 public:
@@ -75,9 +77,9 @@ vector<Vector> counter_interactions(vector<Point> points) {
 vector<Point> updater(vector<Point> points, vector<Vector> sum_F) {
     for (int i = 0; i < points.size(); ++i) {
         points[i].a = sum_F[i] / points[i].m;
-        points[i].v = points[i].v + points[i].a; // вопрос по поводу времени
-        points[i].x = points[i].x + points[i].v.getX();
-        points[i].y = points[i].y + points[i].v.getY();
+        points[i].v = points[i].v + points[i].a*dt; // вопрос по поводу времени
+        points[i].x = points[i].x + points[i].v.getX()*dt;
+        points[i].y = points[i].y + points[i].v.getY()*dt;
     }
     return points;
 }
@@ -99,9 +101,6 @@ int main() {
     vector<sf::CircleShape> shapes;
     vector<sf::CircleShape> orbs;
 
-    sf::Clock timer;
-    timer.restart();
-
     sf::RenderWindow window(sf::VideoMode(800, 800), "N-body problem");
     while (window.isOpen()) {
         sf::Event event;
@@ -110,12 +109,12 @@ int main() {
                 window.close();
         }
 
-        sum_F = counter_interactions(points);
-        points = updater(points, sum_F);
-        sum_F.clear();
+        for (int i = 0; i < N; ++i) {
+            sum_F = counter_interactions(points);
+            points = updater(points, sum_F);
+            sum_F.clear();
+        }
 
-
-        //if (timer.getElapsedTime().asSeconds() > 0.1f) {
         for (int i = 0; i < n; ++i) {
             shapes.emplace_back(points[i].r, 30);
             shapes[i].setFillColor(sf::Color::Blue);
@@ -132,15 +131,13 @@ int main() {
         for (int i = 0; i < n; ++i) {
             window.draw(shapes[i]);
         }
-        for (int i = 0; i < orbs.size(); ++i) {
+        /*for (int i = 0; i < orbs.size(); ++i) {
             window.draw(orbs[i]);
-        }
+        }*/
         window.display();
 
         shapes.clear();
-        timer.restart();
-        //}
-        //sf::sleep(sf::milliseconds(400));
+
 
     }
     return 0;

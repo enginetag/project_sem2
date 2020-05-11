@@ -17,17 +17,3 @@ message(STATUS "SFML libraries: ${SFML_LIBRARIES}")
 add_executable(${PROJECT_NAME} main.cpp vector.h vectorS.cpp)
 
 target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
-
-
-#[[
-#include_directories(${SFML_INCLUDE_DIR})
-include_directories("c:/sfml/include")
-
-
-link_directories("C:/sfml/lib")
-
-add_executable(graphic main.cpp vector.h vectorS.cpp)
-
-#target_link_libraries(graphic ${SFML_LIBRARIES})
-target_link_libraries(graphic "c:/sfml/lib")
-]]
